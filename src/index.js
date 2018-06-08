@@ -38,35 +38,33 @@ const Events = ({location}) => {
               text
               html
             }
-            is_free
             name {
               text
             },
             logo {
               url
-            },
+            }
             start {
               timezone
               local
               utc
-            },
+            }
             venue {
               id
               name
-            },
+            }
             category {
               id
               name
-            },
+            }
             ticket_classes {
               cost {
                 display,
                 currency,
                 value
               }
-                id
-                name
-            },
+              name
+            }
             performances {
                 display_name
             }
@@ -80,25 +78,27 @@ const Events = ({location}) => {
             if (loading) return <Loader location={location} />;
             if (error) return <p>Error :(</p>;
 
-            const eventItems = data.events.map(({id, url, name, venue, category, start, logo, is_free, ticket_classes}, i) => {
+            const eventItems = data.events.map(({id, url, name, venue, category, start, logo, is_free, ticket_classes, performances}, i) => {
               let momentObj = moment(new Date(start.local));
               let momentString = momentObj.format('MMM D');
-              let eventCost = 'Free'
+              let eventCost = 'Free';
+              let headliner = performances[0].display_name;
 
-              if(!is_free) {
-                let orderedTickets = _.orderBy(ticket_classes, ['value'], 'asc');
-                if(orderedTickets[0].cost) {
-                  eventCost = orderedTickets[0].cost.display;
-                }
-                if(orderedTickets.length > 1 && orderedTickets[orderedTickets.length-1].cost) {
-                  eventCost += ` - ${orderedTickets[orderedTickets.length-1].cost.display}`;
-                }
+              let orderedTickets = _.orderBy(ticket_classes, ['value'], 'asc');
+              if(orderedTickets[0].cost) {
+                eventCost = orderedTickets[0].cost.display;
+              }
+              if(orderedTickets.length > 1 && orderedTickets[orderedTickets.length-1].cost) {
+                eventCost += ` - ${orderedTickets[orderedTickets.length-1].cost.display}`;
               }
 
               return (
                 <li key={id}>
                   <h1>{headliner}</h1>
-                  <a href={url}><img src={logo && logo.url} /></a>
+                  <div className="event-image">
+                    <a href={url}><img src={logo && logo.url} alt={name.text} /></a>
+                    <div className="event-cost">{eventCost}</div>
+                  </div>
                   <p>{momentString} - {venue && venue.name} </p>
                 </li>
               )
@@ -164,27 +164,23 @@ class App extends Component {
         <ApolloProvider client={client}>
           <div>
             <section className="header">
-            <h1 className="title">Find artists playing in your city.</h1>
-            <div className="search">
-                <input className="search-city"
-                    value={loc}
-                    onChange={this.updateValue}
-                    onKeyDown={this.performSearch}
-                    placeholder="Enter city"
-                    type="text"
-                    ref={this.cityNameRef}
-                />
-                <button
-                    className="search-btn"
-                    onClick={this.updateLocation}
-                >
-                        Search
-                            </button>
-                        </div>
-                    </section>
-                    <Events location={location} />
+              <h1 className="title">Find artists playing in your city.</h1>
+              <div className="search">
+                  <input className="search-city"
+                      value={loc}
+                      onChange={this.updateValue}
+                      onKeyDown={this.performSearch}
+                      placeholder="Enter city"
+                      type="text"
+                      ref={this.cityNameRef}
+                  />
+                  <button
+                      className="search-btn"
+                      onClick={this.updateLocation}
+                  >
+                    Search</button>
                 </div>
-              </section>
+            </section>
               <Events location={location} />
               <footer className="page-footer">
               <br />
