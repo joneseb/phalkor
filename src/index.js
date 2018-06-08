@@ -139,6 +139,12 @@ class App extends Component {
                 </div>
               </section>
               <Events location={location} />
+              <footer>
+              <br />
+              Team Phalkor ~ MBU Hackathon ~ June 2018<br />
+              GraphQL and Apollo powered search sitting over Eventbrite Restful API<br />
+              Members: Joe Seifi, Justin Jones, Jeff McKenzie, Ross Chapman, Honorable Mention: Barrett Cook
+              </footer>
           </div>
       </ApolloProvider>
     )
