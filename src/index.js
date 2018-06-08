@@ -32,12 +32,7 @@ const Events = ({location}) => {
             start: "2020-06-08T00:00:00Z"
             end: "2020-06-15T00:00:00Z"
         }) {
-            id
             url
-            description {
-              text
-              html
-            }
             name {
               text
             },
@@ -45,25 +40,18 @@ const Events = ({location}) => {
               url
             }
             start {
-              timezone
               local
-              utc
             }
             venue {
-              id
               name
             }
             category {
-              id
               name
             }
             ticket_classes {
               cost {
                 display,
-                currency,
-                value
               }
-              name
             }
             performances {
                 display_name
@@ -122,8 +110,8 @@ class App extends Component {
     }
 
     state = {
-        location: 'San Francisco',
-        loc: 'San Francisco',
+        location: 'New York',
+        loc: 'New York',
     }
 
   updateLocation = () => {
