@@ -20,6 +20,7 @@ const Events = ({location}) => {
             location: "${location}"
           }) {
             id
+            url
             name {
               text
             },
@@ -47,16 +48,15 @@ const Events = ({location}) => {
             if (loading) return <h2 className="events-title">Finding shows in {location} ...</h2>;
             if (error) return <p>Error :(</p>;
 
-            const eventItems = data.events.map(({id, name, venue, category, start, logo}, i) => {
+            const eventItems = data.events.map(({id, url, name, venue, category, start, logo}, i) => {
               var dateObj = new Date(start.local);
               var momentObj = moment(dateObj);
-              var momentString = momentObj.format('DD/MM/YYYY');
+              var momentString = momentObj.format('MMM D');
               return (
                 <li key={id}>
-                <h4>{name.text}</h4>
-                <img src={logo && logo.url} />
-                <p>{venue && venue.name}</p>
-                <em>{momentString} - {category && category.name}</em>
+                  <a href={url}><img src={logo && logo.url} /></a>
+                  <h4>{name.text}</h4>
+                  <p>{momentString} - {venue && venue.name} </p>
                 </li>
               )
             });
@@ -115,7 +115,13 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
           <div>
-              <h1>Phalcor - <small>(Event search using GraphQL)</small></h1>
+              <ul className="city-list">
+                <li><button className={location === 'San Francisco' ? 'selected' : ''} onClick={() => this.updateInput('San Francisco')}>San Francisco</button></li>
+                <li><button className={location === 'New York' ? 'selected' : ''} onClick={() => this.updateInput('New York')}>New York</button></li>
+                <li><button className={location === 'Miami' ? 'selected' : ''} onClick={() => this.updateInput('Miami')}>Miami</button></li>
+                <li><button className={location === 'Seattle' ? 'selected' : ''} onClick={() => this.updateInput('Seattle')}>Seattle</button></li>
+              </ul>
+              <h1 className="title">Find shows around the world.</h1>
               <div className="search">
                 <input className="search-city"
                   value={loc}
@@ -127,15 +133,9 @@ class App extends Component {
                 <button
                   className="search-btn"
                   onClick={this.updateLocation}>
-                    Find Events
+                    Search
                 </button>
               </div>
-              <ul className="city-list">
-                <li><button onClick={() => this.updateInput('San Francisco')}>San Francisco</button></li>
-                <li><button onClick={() => this.updateInput('New York')}>New York</button></li>
-                <li><button onClick={() => this.updateInput('Miami')}>Miami</button></li>
-                <li><button onClick={() => this.updateInput('Seattle')}>Seattle</button></li>
-              </ul>
               <Events location={location} />
           </div>
       </ApolloProvider>
