@@ -70,12 +70,12 @@ const Events = ({location}) => {
             performances {
                 display_name
             }
-        }}`;
-    return ( 
-        <Query
-            variables={{location}}
-            query={gql`${query}`}
-        >
+          }
+        }
+    `;
+    
+    return (
+      <Query query={gql`${query}`} variables={{location}}>
         {({ loading, error, data }) => {
             if (loading) return <Loader location={location} />;
             if (error) return <p>Error :(</p>;
