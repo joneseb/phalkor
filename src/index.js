@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import _ from 'lodash';
 import moment from 'moment';
 import gql from "graphql-tag";
 import { ApolloProvider, Query } from "react-apollo";
@@ -15,18 +16,23 @@ const Events = ({location}) => {
     <Query
         query={gql`
         {
-          events(filters:{
+          events(filters: {
             categories: "103"
             location: "${location}"
           }) {
             id
             url
+            description {
+              text
+              html
+            }
+            is_free
             name {
               text
             },
             logo {
               url
-            }
+            },
             start {
               timezone
               local
@@ -39,6 +45,13 @@ const Events = ({location}) => {
             category {
               id
               name
+            },
+            ticket_classes {
+              cost {
+                display,
+                currency,
+                value
+              }
             }
           }
         }
@@ -48,13 +61,27 @@ const Events = ({location}) => {
             if (loading) return <h2 className="events-title">Finding shows in {location} ...</h2>;
             if (error) return <p>Error :(</p>;
 
-            const eventItems = data.events.map(({id, url, name, venue, category, start, logo}, i) => {
-              var dateObj = new Date(start.local);
-              var momentObj = moment(dateObj);
-              var momentString = momentObj.format('MMM D');
+            const eventItems = data.events.map(({id, url, name, venue, category, start, logo, is_free, ticket_classes}, i) => {
+              let momentObj = moment(new Date(start.local));
+              let momentString = momentObj.format('MMM D');
+              let eventCost = 'Free'
+
+              if(!is_free) {
+                let orderedTickets = _.orderBy(ticket_classes, ['value'], 'asc');
+                if(orderedTickets[0].cost) {
+                  eventCost = orderedTickets[0].cost.display;
+                }
+                if(orderedTickets.length > 1 && orderedTickets[orderedTickets.length-1].cost) {
+                  eventCost += ` - ${orderedTickets[orderedTickets.length-1].cost.display}`;
+                }
+              }
+
               return (
                 <li key={id}>
-                  <a href={url}><img src={logo && logo.url} /></a>
+                  <div className="event-image">
+                    <a href={url}><img src={logo && logo.url} alt={name.text} /></a>
+                    <div className="event-cost">{eventCost}</div>
+                  </div>
                   <h4>{name.text}</h4>
                   <p>{momentString} - {venue && venue.name} </p>
                 </li>
@@ -146,7 +173,7 @@ class App extends Component {
                 </div>
               </section>
               <Events location={location} />
-              <footer>
+              <footer className="page-footer">
               <br />
               Team Phalkor ~ MBU Hackathon ~ June 2018<br />
               GraphQL and Apollo powered search sitting over Eventbrite Restful API<br />
