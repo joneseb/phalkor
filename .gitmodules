@@ -1,3 +1,3 @@
 [submodule "eventbrite-graphql"]
 	path = eventbrite-graphql
-	url = https://github.com/barrettcook/eventbrite-graphql.git
+	url = https://github.com/rchapman-eb/eventbrite-graphql
