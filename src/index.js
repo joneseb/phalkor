@@ -109,6 +109,12 @@ class App extends Component {
     });
   }
 
+  performSearch = (e) => {
+    if(e && e.keyCode === 13) {
+      this.updateLocation();
+    }
+  }
+
   render() {
     let {location, loc} = this.state;
 
@@ -127,6 +133,7 @@ class App extends Component {
                   <input className="search-city"
                     value={loc}
                     onChange={this.updateValue}
+                    onKeyDown={this.performSearch}
                     placeholder="Enter city"
                     type="text"
                     ref={this.cityNameRef}
