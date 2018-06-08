@@ -7,8 +7,11 @@ body {
 
 h1,h2,h3,h4,h5,h6 {margin: 0}
 
-.search {
+.header {
   background: #31263E;
+}
+
+.search {
   margin: 0;
   display: flex;
   justify-content: center;
@@ -55,12 +58,10 @@ h1,h2,h3,h4,h5,h6 {margin: 0}
 .title {
   padding-top: 6vh;
   text-align: center;
-  background: #31263E;
   color: #fff;
 }
 
 .city-list {
-  background-color: #31263E;
   list-style-type: none;
   display: flex;
   justify-content: space-around;
@@ -108,13 +109,25 @@ h1,h2,h3,h4,h5,h6 {margin: 0}
   border: 1px solid #EFEFEF;
   background-color: #fff;
   border-radius: 3px;
-  flex-basis: 44%;
+  flex-basis: 96%;
   box-sizing: border-box;
+}
+
+@media screen and (min-width: 500px) {
+  .events li {
+    flex-basis: 44%;
+  }
 }
 
 @media screen and (min-width: 900px) {
   .events li {
     flex-basis: 28%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .events li {
+    flex-basis: 21%;
   }
 }
 

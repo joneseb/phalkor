@@ -115,27 +115,29 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
           <div>
-              <ul className="city-list">
-                <li><button className={location === 'San Francisco' ? 'selected' : ''} onClick={() => this.updateInput('San Francisco')}>San Francisco</button></li>
-                <li><button className={location === 'New York' ? 'selected' : ''} onClick={() => this.updateInput('New York')}>New York</button></li>
-                <li><button className={location === 'Miami' ? 'selected' : ''} onClick={() => this.updateInput('Miami')}>Miami</button></li>
-                <li><button className={location === 'Seattle' ? 'selected' : ''} onClick={() => this.updateInput('Seattle')}>Seattle</button></li>
-              </ul>
-              <h1 className="title">Find shows around the world.</h1>
-              <div className="search">
-                <input className="search-city"
-                  value={loc}
-                  onChange={this.updateValue}
-                  placeholder="Enter city"
-                  type="text"
-                  ref={this.cityNameRef}
-                />
-                <button
-                  className="search-btn"
-                  onClick={this.updateLocation}>
-                    Search
-                </button>
-              </div>
+              <section className="header">
+                <ul className="city-list">
+                  <li><button className={location === 'San Francisco' ? 'selected' : ''} onClick={() => this.updateInput('San Francisco')}>San Francisco</button></li>
+                  <li><button className={location === 'New York' ? 'selected' : ''} onClick={() => this.updateInput('New York')}>New York</button></li>
+                  <li><button className={location === 'Miami' ? 'selected' : ''} onClick={() => this.updateInput('Miami')}>Miami</button></li>
+                  <li><button className={location === 'Seattle' ? 'selected' : ''} onClick={() => this.updateInput('Seattle')}>Seattle</button></li>
+                </ul>
+                <h1 className="title">Find shows around the world.</h1>
+                <div className="search">
+                  <input className="search-city"
+                    value={loc}
+                    onChange={this.updateValue}
+                    placeholder="Enter city"
+                    type="text"
+                    ref={this.cityNameRef}
+                  />
+                  <button
+                    className="search-btn"
+                    onClick={this.updateLocation}>
+                      Search
+                  </button>
+                </div>
+              </section>
               <Events location={location} />
           </div>
       </ApolloProvider>
