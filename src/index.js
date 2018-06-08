@@ -11,6 +11,18 @@ const client = new ApolloClient({
     uri: 'http://localhost:5000/OWDQ2AIMGX6LDXIMH7SY'
 });
 
+const Loader = ({location}) => (
+  <div>
+    <h2 className="events-title">Finding shows in {location}</h2>
+    <div class="sk-folding-cube">
+      <div class="sk-cube1 sk-cube"></div>
+      <div class="sk-cube2 sk-cube"></div>
+      <div class="sk-cube4 sk-cube"></div>
+      <div class="sk-cube3 sk-cube"></div>
+    </div>
+  </div>
+);
+
 const Events = ({location}) => {
   return (
     <Query
@@ -58,7 +70,7 @@ const Events = ({location}) => {
     `}
     >
         {({ loading, error, data }) => {
-            if (loading) return <h2 className="events-title">Finding shows in {location} ...</h2>;
+            if (loading) return <Loader location={location} />;
             if (error) return <p>Error :(</p>;
 
             const eventItems = data.events.map(({id, url, name, venue, category, start, logo, is_free, ticket_classes}, i) => {
