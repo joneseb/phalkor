@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import moment from 'moment';
-import gql from "graphql-tag";
-import { ApolloProvider, Query } from "react-apollo";
+import gql from 'graphql-tag';
+import {ApolloProvider, Query} from 'react-apollo';
 import ApolloClient from 'apollo-boost';
-import './App.css'
+import './App.css';
 
 const client = new ApolloClient({
-    uri: 'http://localhost:5000/OWDQ2AIMGX6LDXIMH7SY'
+    uri: 'http://localhost:5000/EXTIGEM22EPLM5O2M43L',
 });
 
 const Loader = ({location}) => (
@@ -24,14 +24,14 @@ const Loader = ({location}) => (
 );
 
 const Events = ({location}) => {
-  return (
-    <Query
-        query={gql`
-        {
-          events(filters: {
+    const query = `
+        query ArtistEvents($location: String!){
+            events(filters: {
             categories: "103"
-            location: "${location}"
-          }) {
+            location: $location
+            start: "2020-06-08T00:00:00Z"
+            end: "2020-06-15T00:00:00Z"
+        }) {
             id
             url
             description {
@@ -64,11 +64,18 @@ const Events = ({location}) => {
                 currency,
                 value
               }
+                id
+                name
+            },
+            performances {
+                display_name
             }
-          }
-        }
-    `}
-    >
+        }}`;
+    return ( 
+        <Query
+            variables={{location}}
+            query={gql`${query}`}
+        >
         {({ loading, error, data }) => {
             if (loading) return <Loader location={location} />;
             if (error) return <p>Error :(</p>;
@@ -90,11 +97,8 @@ const Events = ({location}) => {
 
               return (
                 <li key={id}>
-                  <div className="event-image">
-                    <a href={url}><img src={logo && logo.url} alt={name.text} /></a>
-                    <div className="event-cost">{eventCost}</div>
-                  </div>
-                  <h4>{name.text}</h4>
+                  <h1>{headliner}</h1>
+                  <a href={url}><img src={logo && logo.url} /></a>
                   <p>{momentString} - {venue && venue.name} </p>
                 </li>
               )
@@ -108,44 +112,43 @@ const Events = ({location}) => {
               </section>
             )
         }}
-    </Query>
-  )
+    </Query>)
 };
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.cityNameRef = React.createRef();
+    }
 
-  constructor(props) {
-    super(props);
-    this.cityNameRef = React.createRef();
-  }
-
-  state =
-   {
-     location: 'San Francisco',
-     loc: 'San Francisco'
-  }
+    state = {
+        location: 'San Francisco',
+        loc: 'San Francisco',
+    }
 
   updateLocation = () => {
-    let location = this.cityNameRef.current.value;
-    if(location && location.length > 0) {
-      this.setState({
-        location
-      });
-    }
+      let location = this.cityNameRef.current.value;
+
+      if(location && location.length > 0) {
+          this.setState({
+              location,
+          });
+      }
   }
 
   updateValue = (e) => {
-    let loc = e && e.target ? e.target.value : this.cityNameRef.current.value;
-    this.setState({
-      loc
-    });
+      let loc = e && e.target ? e.target.value : this.cityNameRef.current.value;
+
+      this.setState({
+          loc,
+      });
   }
 
   updateInput = (loc) => {
-    this.setState({
-      loc,
-      location: loc
-    });
+      this.setState({
+          loc,
+          location: loc,
+      });
   }
 
   performSearch = (e) => {
@@ -157,31 +160,29 @@ class App extends Component {
   render() {
     let {location, loc} = this.state;
 
-    return (
-      <ApolloProvider client={client}>
+        return (
+        <ApolloProvider client={client}>
           <div>
-              <section className="header">
-                <ul className="city-list">
-                  <li><button className={location === 'San Francisco' ? 'selected' : ''} onClick={() => this.updateInput('San Francisco')}>San Francisco</button></li>
-                  <li><button className={location === 'New York' ? 'selected' : ''} onClick={() => this.updateInput('New York')}>New York</button></li>
-                  <li><button className={location === 'Miami' ? 'selected' : ''} onClick={() => this.updateInput('Miami')}>Miami</button></li>
-                  <li><button className={location === 'Seattle' ? 'selected' : ''} onClick={() => this.updateInput('Seattle')}>Seattle</button></li>
-                </ul>
-                <h1 className="title">Find shows around the world.</h1>
-                <div className="search">
-                  <input className="search-city"
+            <section className="header">
+            <h1 className="title">Find artists playing in your city.</h1>
+            <div className="search">
+                <input className="search-city"
                     value={loc}
                     onChange={this.updateValue}
                     onKeyDown={this.performSearch}
                     placeholder="Enter city"
                     type="text"
                     ref={this.cityNameRef}
-                  />
-                  <button
+                />
+                <button
                     className="search-btn"
-                    onClick={this.updateLocation}>
-                      Search
-                  </button>
+                    onClick={this.updateLocation}
+                >
+                        Search
+                            </button>
+                        </div>
+                    </section>
+                    <Events location={location} />
                 </div>
               </section>
               <Events location={location} />
@@ -195,7 +196,7 @@ class App extends Component {
       </ApolloProvider>
     )
   }
-};
+}
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 

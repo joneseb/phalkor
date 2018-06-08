@@ -5,10 +5,8 @@ body {
   color: #222;
 }
 
-h1,h2,h3,h4,h5,h6 {margin: 0}
-
 .header {
-  background: #31263E;
+  background-image: url('https://cdn.evbstatic.com/s3-build/perm_001/35d88f/django/images/home/banners/homepage_hero_banner_1.jpg');
 }
 
 .search {
